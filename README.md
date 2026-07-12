@@ -32,19 +32,23 @@ Left a comment on the issue and was assigned by the maintainer.
 
 ### Problem Description
 
-[In your own words, what's broken or missing?]
+Two components use a useState + useEffect pattern to sync activeTab with the 
+browser's URL hash. React has a built in hook useSyncExternalStore specifically designed for subscribing to external stores safely during concurrent renders.
 
 ### Expected Behavior
 
-[What should happen?]
+The activeTab state should be managed with useSyncExternalStore(subscribe, getSnapshot) where subscribe handles the hashchange listener and getSnapshot returns the current active tab from the URL.
 
 ### Current Behavior
 
-[What actually happens?]
+Both components use:
+- useState to store activeTab
+- useEffect to add/remove a window hashchange event listener that calls setActiveTab
 
 ### Affected Components
 
-[Which parts of the codebase are involved?]
+- features/admin.console-settings.v1/components/console-settings-tabs.tsx (line 202)
+- features/admin.tenants.v1/components/system-settings/system-settings-tabs.tsx (line 116)
 
 ---
 
@@ -52,19 +56,25 @@ Left a comment on the issue and was assigned by the maintainer.
 
 ### Environment Setup
 
-[Notes on setting up your local development environment - challenges you faced, how you solved them]
+- Already had identity-apps forked and cloned from Contribution 1
+- Created new branch fix-issue-27946 from master
 
 ### Steps to Reproduce
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. Clone https://github.com/wso2/identity-apps
+2. Open features/admin.console-settings.v1/components/console-settings-tabs.tsx
+3. Navigate to line 202 — observe useState storing activeTab
+4. Navigate to line 207 — observe useEffect subscribing to window hashchange 
+   events to call setActiveTab
+5. Repeat for features/admin.tenants.v1/components/system-settings  system-settings-tabs.tsx at line 116
+6. Both files show the same useState + useEffect external store sync pattern
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:** [Link to commit in your fork]
+- **Commit showing reproduction:**  https://github.com/canbo206/identity-apps/tree/fix-issue-27946
 - **Screenshots/logs:** [If applicable]
-- **My findings:** [What you discovered during reproduction]
+- **My findings:** Confirmed identical useState + useEffect hashchange patterns 
+  in both affected files exactly as described in the issue
 
 ---
 
@@ -82,20 +92,32 @@ Left a comment on the issue and was assigned by the maintainer.
 
 Using UMPIRE framework (adapted):
 
-**Understand:** [Restate the problem]
+**Understand:** 
+Both components sync activeTab with the browser URL hash using useState + useEffect. 
+The window hashchange event is an external store. useSyncExternalStore is the 
+correct React hook for this pattern.
 
-**Match:** [What similar patterns/solutions exist in the codebase?]
+**Match:**  
+Both files have identical patterns so the same fix applies to both.
 
 **Plan:** [Step-by-step implementation plan]
-1. [Modify file X to do Y]
-2. [Add function Z]
-3. [Update tests]
+1. Add useSyncExternalStore to the React import in both files
+2. Remove useState and useEffect for activeTab
+3. Define a subscribe function that adds/removes the hashchange listener
+4. Define a getSnapshot function that returns getActiveTabFromUrl()
+5. Replace with: const activeTab = useSyncExternalStore(subscribe, getSnapshot)
+6. Verify no TypeScript errors
 
-**Implement:** [Link to your branch/commits as you work]
+**Implement:** https://github.com/canbo206/identity-apps/tree/fix-issue-27946
 
-**Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
+**Review:** 
+- [ ] Follows TypeScript conventions from CLAUDE.md
+- [ ] No new TypeScript errors
+- [ ] Checked CONTRIBUTING.md
 
-**Evaluate:** [How will you verify it works?]
+**Evaluate:** 
+- Run pnpm typecheck to verify no errors
+- Manually verify tab switching still works correctly
 
 ---
 
