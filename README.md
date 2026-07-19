@@ -4,7 +4,7 @@
 **Contribution Number:** 2  
 **Student:** Canbo Li
 **Issue:** (https://github.com/wso2/product-is/issues/27946)  
-**Status:** Phase II Complete
+**Status:** Phase III Ongoing
 
 ---
 
@@ -142,10 +142,10 @@ Both files have identical patterns so the same fix applies to both.
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week [7] Progress
 
 [What you built this week, challenges faced, decisions made]
-
+I've reproduced the issue and reviewed the contribution guidelines for this issue thoroughly
 ### Week [Y] Progress
 
 [Continue documenting as you work]
