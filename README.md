@@ -125,34 +125,38 @@ Both files have identical patterns so the same fix applies to both.
 
 ### Unit Tests
 
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
+- [ ] Test case 1: Reviewing existing test patterns in the repo to determine if a unit test exists for tab-switching logic in either component
+- [ ] Test case 2: Investigating whether a test double/mock for window.location.hash and hashchange events is needed to test useSyncExternalStore behavior in isolation
 - [ ] Test case 3: [Description]
 
 ### Integration Tests
 
-- [ ] Integration scenario 1
+- [ ] Planning to verify tab switching behavior end-to-end once implementation is finalized
 - [ ] Integration scenario 2
 
 ### Manual Testing
 
-[What you tested manually and results]
+Clicking each tab in the Console Settings page updates both the displayed tab content and the URL hash
 
 ---
 
 ## Implementation Notes
 
-### Week [7] Progress
+### Week [8] Progress
 
 [What you built this week, challenges faced, decisions made]
-I've reproduced the issue and reviewed the contribution guidelines for this issue thoroughly
+
+Implemented the core fix in both affected files: replaced the useState + useEffect hash-change listener pattern with React's useSyncExternalStore hook. This involved:
+Writing a subscribeToHashChange function (via useCallback) that registers/unregisters 
+
+a hashchange listener, matching the subscribe signature useSyncExternalStore expects
 ### Week [Y] Progress
 
 [Continue documenting as you work]
 
 ### Code Changes
 
-- **Files modified:** [List]
+- **Files modified:** features/admin.console-settings.v1/components/console-settings-tabs.tsx, features/admin.tenants.v1/components/system-settings/system-settings-tabs.tsx
 - **Key commits:** [Links to important commits]
 - **Approach decisions:** [Why you chose certain approaches]
 
